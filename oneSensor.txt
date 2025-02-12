@@ -1,0 +1,32 @@
+#include <Wire.h>
+#include <VL53L0X.h>
+
+VL53L0X sensor;
+
+void setup() {
+    Serial.begin(115200);
+    delay(1000);  // Allow time for Serial Monitor to open
+    Wire.begin();
+
+    if (!sensor.init()) {
+        Serial.println("VL53L0X sensor failed to initialize!");
+        while (1);  // Stop if sensor fails
+    }
+
+    sensor.setTimeout(500);
+    Serial.println("VL53L0X Ready!");
+}
+
+void loop() {
+    int distance = sensor.readRangeSingleMillimeters();
+
+    if (sensor.timeoutOccurred()) {
+        Serial.println("Timeout occurred!");
+    } else {
+        Serial.print("Distance: ");
+        Serial.print(distance);
+        Serial.println(" mm");
+    }
+
+    delay(500);  // Read sensor every 500ms
+}
